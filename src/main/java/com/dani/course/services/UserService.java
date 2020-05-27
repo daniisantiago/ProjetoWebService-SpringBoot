@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.dani.course.entities.User;
 import com.dani.course.repositories.UserRepository;
+import com.dani.course.services.exceptions.ResourceNotFoundException;
 
 @Service //registrando como um componente do Spring
 public class UserService {
@@ -21,7 +22,7 @@ public class UserService {
 	
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
 	public User insert(User obj) {
@@ -34,7 +35,7 @@ public class UserService {
 	
 	public User update(Long id, User obj) {
 		Optional<User> user  = repository.findById(id);
-		User entity = user.get();
+		User entity = user.orElseThrow(() -> new ResourceNotFoundException(id));
 		updateData(entity, obj);
 		return repository.save(entity);
 	}
